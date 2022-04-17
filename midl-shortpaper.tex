@@ -72,10 +72,18 @@ This is a great paper and it has a concise abstract.
 \end{abstract}
 
 \begin{keywords}
-List of keywords, comma separated.
+quality control, quality assurance, deep learning, web interface.
 \end{keywords}
 
 \section{Introduction}
+
+Discovery of new knowledge in medicine is sometimes accomplished by large, multi-center imaging studies. The success of these studies depends on the quality of images and the resulting measurements, regardless of the size of the study. Many studies rely on in-house procedures that combine automatically generated scores with manually guided checks, such as visual inspection. Currently these procedures are often implemented by combining several software systems that are not designed to support Quality Assurance (QA) or Quality Control (QC) processes. Our Medical Image Quality Assurance (MIQA) system represents a design that facilitates collaboration and sharing. It incorporates a state-of-the-art deep learning component to improve the effectiveness of QC efforts unique to the needs of multi-center studies. The usefulness of this unique QC system is being tested by National Consortium on Alcohol and Neurodevelopment in Adolescence (NCANDA) project. NCANDA uses magnetic resonance images (MRIs) of the brain, so we focus on deep learning using head MRIs in this paper.
+
+Add here description of MIQA web application. I would like to mention that we use MRIQC~\cite{esteban2017mriqc}, but we should implement that soon, ideally before the paper deadline.
+
+As far as we know, this is the first attempt at assessing image quality of 3D images. Previous studies used photographs~\cite{bosse2017deep,bianco2018use,hosu2020koniq}, retinal fundus images~\cite{yu2017image}, linguistic descriptions of images~\cite{hou2014blind}, or tried to improve image quality by e.g. reducing noise~\cite{higaki2019improvement}.
+
+We use data from PREDICT-HD study~\cite{paulsen2014clinical}, which has manually assesed quality for approximately 20.000 brain MRIs.
 
 This is where the content of your paper goes.  Some random notes:
 \begin{itemize}
