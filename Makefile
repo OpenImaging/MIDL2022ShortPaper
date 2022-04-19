@@ -3,7 +3,7 @@ CFLAGS = -pdf -pdflatex="pdflatex -interaction=nonstopmode" -use-make
 
 .PHONY: all clean deep_clean
 
-PDFS = midl-fullpaper.pdf midl-shortpaper.pdf
+PDFS = midl-shortpaper.pdf
 TEX = $(PDFS:.pdf=.tex)
 
 all: $(PDFS)
