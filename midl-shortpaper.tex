@@ -26,7 +26,7 @@
 % \Name{Matt McCormick\nametag{$^{1}$}} \Email{matt.mccormick@kitware.com}\\
 \Name{Curtis Lisle\nametag{$^{2}$}} \Email{clisle@knowledgevis.com}\\
 \Name{Kilian Pohl\nametag{$^{3}$}} \Email{kilian.pohl@stanford.edu}\\
-\Name{Hans Johnson\nametag{$^{4}$}} \Email{hans-johnson@uiowa.edu}\\
+\Name{Hans J. Johnson\nametag{$^{4}$}} \Email{hans-johnson@uiowa.edu}\\
 \Name{Aashish Chaudhary\nametag{$^{1}$}} \Email{aashish.chaudhary@kitware.com}\\
 \addr $^{1}$ Kitware Inc., Carrboro, North Carolina, USA\\
 \addr $^{2}$ KnowledgeVis LLC, Florida, USA\\
@@ -97,25 +97,27 @@ The data mostly consisted of images with little or no artifacts. 455 images had 
 
 \section{Results and Discussion}
 
-We split the available data into 5 folds based on subject id.
+We split the available data into 5 folds based on subject. Running cross-validation, coefficient of determination R$^2$ varied around 0.2 to 0.3 for validation data and around 0.5 to 0.8 for training data. As there are no previous studies to compare to, we are setting precedent.
 
-We provide source code on GitHub (\url{https://github.com/OpenImaging/miqa/blob/master/miqa/learning/nn_training.py}), where we openly develop this system.
+TODO: add more text here.
+
+We provide source code at \url{https://github.com/OpenImaging/miqa}, where we openly develop this system. We also maintain a demo instance at \url{https://miqa.miqaweb.io/}.
 
 
-\begin{table}[htbp]
- % The first argument is the label.
- % The caption goes in the second argument, and the table contents
- % go in the third argument.
-\floatconts
-  {tab:example}%
-  {\caption{An Example Table}}%
-  {\begin{tabular}{ll}
-  \bfseries Dataset & \bfseries Result\\
-  Data1 & 0.12345\\
-  Data2 & 0.67890\\
-  Data3 & 0.54321
-  \end{tabular}}
-\end{table}
+% \begin{table}[htbp]
+%  % The first argument is the label.
+%  % The caption goes in the second argument, and the table contents
+%  % go in the third argument.
+% \floatconts
+%   {tab:example}%
+%   {\caption{An Example Table}}%
+%   {\begin{tabular}{ll}
+%   \bfseries Dataset & \bfseries Result\\
+%   Data1 & 0.12345\\
+%   Data2 & 0.67890\\
+%   Data3 & 0.54321
+%   \end{tabular}}
+% \end{table}
 
 
 % Acknowledgments---Will not appear in anonymized version
