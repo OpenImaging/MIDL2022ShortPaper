@@ -25,11 +25,11 @@
 % \Name{Daniel Chiquito\nametag{$^{1}$}} \Email{daniel.chiquito@kitware.com}\\
 % \Name{Matt McCormick\nametag{$^{1}$}} \Email{matt.mccormick@kitware.com}\\
 \Name{Curtis Lisle\nametag{$^{2}$}} \Email{clisle@knowledgevis.com}\\
-\Name{Kilian Pohl\nametag{$^{3}$}} \Email{kilian.pohl@stanford.edu}\\
+\Name{Kilian M. Pohl\nametag{$^{3}$}} \Email{kilian.pohl@stanford.edu}\\
 \Name{Hans J. Johnson\nametag{$^{4}$}} \Email{hans-johnson@uiowa.edu}\\
 \Name{Aashish Chaudhary\nametag{$^{1}$}} \Email{aashish.chaudhary@kitware.com}\\
 \addr $^{1}$ Kitware Inc., Carrboro, North Carolina, USA\\
-\addr $^{2}$ KnowledgeVis LLC, Florida, USA\\
+\addr $^{2}$ KnowledgeVis LLC, Altamonte Springs, Florida, USA\\
 \addr $^{3}$ Department of Psychiatry \& Behavioral Sciences, Stanford University\\
 \addr $^{4}$ Electrical and Computer Engineering, University of Iowa\\
 % \vspace{-4mm}
@@ -42,9 +42,9 @@
 \begin{abstract}
 We present an open-source web tool for quality control of distributed imaging studies.
 To minimize the amount of human time and attention spent reviewing the images,
-we created a neural network which provides an automatic assessment.
+we created a neural network to provide an automatic assessment.
 This steers reviewers' attention to potentially problematic cases,
-reducing the likelihood to miss an image quality issue.
+reducing the likelihood of missing image quality issues.
 We test our approach using 5-fold cross validation on a set of 5217 magnetic resonance images.
 \end{abstract}
 
@@ -54,16 +54,17 @@ quality control, quality assurance, neural networks, web interface.
 
 \section{Introduction}
 
-Discovery of new knowledge in medicine is sometimes accomplished by large, multi-center imaging studies. The success of these studies depends on the quality of images and the resulting measurements, regardless of the size of the study.
+Discovery of new knowledge in medicine is sometimes accomplished by large, multi-center imaging studies. The success of these studies depends on the quality of images and the resulting measurements. 
+%regardless of the size of the study.
 % Many studies rely on in-house procedures that combine automatically generated scores with manually guided checks, such as visual inspection. Currently these procedures are often implemented by combining several software systems that are not designed to support Quality Assurance (QA) or Quality Control (QC) processes.
-Our open-source \href{https://github.com/OpenImaging/miqa}{Medical Image Quality Assurance} (MIQA) system represents a design that facilitates collaboration and sharing. It incorporates a state-of-the-art deep learning component to improve the effectiveness of Quality Control (QC) efforts unique to the needs of multi-center studies. The usefulness of this unique QC system is being tested by National Consortium on Alcohol and Neurodevelopment in Adolescence (NCANDA) project. NCANDA uses magnetic resonance images (MRIs) of the brain, so we focus on deep learning using head MRIs in this paper.
+Our open-source \href{https://github.com/OpenImaging/miqa}{Medical Image Quality Assurance} (MIQA) system represents a design that facilitates collaboration and sharing. It incorporates a state-of-the-art deep learning component to improve the effectiveness of Quality Control (QC) efforts unique to the needs of multi-center studies. The usefulness of this unique QC system is being tested by the National Consortium on Alcohol and Neurodevelopment in Adolescence (NCANDA) project. NCANDA uses magnetic resonance images (MRIs) of the brain, so we focus on deep learning using head MRIs in this paper.
 
-MIQA is a client-server web application based on \href{https://github.com/girder/girder}{Girder} and \href{https://www.django-rest-framework.org/}{django}. It uses \href{https://vuejs.org/}{Vue} and \href{https://vuetifyjs.com/}{Vuetify} for graphical user interface (GUI). For image processing we use \href{https://itk.org/}{Insight Toolkit (ITK)}. For neural network related operations we use \href{https://pytorch.org/}{PyTorch}, \href{https://monai.io/}{MONAI}, and \href{https://torchio.readthedocs.io/}{TorchIO}.
+MIQA is a client-server web application based on \href{https://github.com/girder/girder}{Girder} and \href{https://www.django-rest-framework.org/}{django}. It uses \href{https://vuejs.org/}{Vue} and \href{https://vuetifyjs.com/}{Vuetify} for its graphical user interface (GUI). For image processing we use the \href{https://itk.org/}{Insight Toolkit (ITK)}. For neural network related operations we use \href{https://pytorch.org/}{PyTorch}, \href{https://monai.io/}{MONAI}, and \href{https://torchio.readthedocs.io/}{TorchIO}.
 
 % Images are either imported or uploaded. During import, images are subjected to NN automatic quality assessment synchronously. After upload, images are auto-assessed asynchronously. Once the assessment is finished, the GUI is updated with the information.
 Images are auto-assessed after upload.
 % Automatic assessment helps human reviewers.
-Images which are not reviewed are available in a queue to tier one reviewers. They can mark it as good or questionable. Questionable images need to be reviewed by tier two reviewers who then make a final decision. An image can be marked bad only if it has presence of at least one artifact. This can be indicated in the GUI, or a free-form text comment provided if the problem does not match well the pre-defined artifact classes.
+Images which are not reviewed are available in a queue to tier one reviewers. They can mark it as either good or questionable. Questionable images need to be reviewed by tier two reviewers who then make a final decision. An image can be marked bad only if it has presence of at least one artifact. This can be indicated in the GUI, or in a free-form text comment provided if the problem does not match the predefined artifact classes.
 
 % I would like to mention that we use MRIQC~\cite{esteban2017mriqc}, but we should implement that before the paper deadline.
 
@@ -73,14 +74,13 @@ or tried to improve image quality~\cite{higaki2019improvement}. The closest one 
 
 \section{Materials and Methods}
 
-We use data from PREDICT-HD study~\cite{paulsen2014clinical}, which has manually assessed quality for structural (T$_1$, T$_2$, PD) brain MRIs. In this study we used only the T$_1$-weighted images. 2299 were acquired on 1.5T and 2918 on 3T MRI machines. The most important annotation is overall quality, scored on 0-10 scale (see \figureref{fig:slices}). It also has manual assessment of signal to noise ratio and contrast to noise ratio. We didn't use them as they are highly correlated the with overall quality, with Pearson coefficients of 0.721 and 0.715.
+For model training, we use data from the PREDICT-HD study~\cite{paulsen2014clinical}, which has manually assessed quality for structural (T$_1$, T$_2$, PD) brain MRIs. In this study we used only the T$_1$-weighted images. 2299 were acquired on 1.5T and 2918 on 3T MRI machines. The most important annotation is overall quality, scored on 0-10 scale (see \figureref{fig:slices}). The original study included manual assessment of signal to noise ratio and contrast to noise ratio. We didn't use these metrics as they are highly correlated the with overall quality, with Pearson coefficients of 0.721 and 0.715, respectively.
 % We made no attempt to use free-text comments.
+The study data contained nine presence/absence indications of anatomical variants in the images. Some of the images were missing a few of the indications. Of the 5217 T$_1$ images, 520 had normal anatomical variants, 61 had lesions, 269 incomplete brain coverage, 30 misalignment, 28 had wraparound, 347 ghosting, 585 inhomgeneity, 187 metal susceptibility, 888 flow artifact, and 1286 had truncation.
 
-There was binary presence indication of anatomical variants and nine artifacts for most images. Some of the images were missing a few of the indications. Of the 5217 T$_1$ images, 520 had normal anatomical variants, 61 had lesions, 269 incomplete brain coverage, 30 misalignment, 28 had wraparound, 347 ghosting, 585 inhomgeneity, 187 metal susceptibility, 888 flow artifact, and 1286 had truncation.
+The data largely consisted of images with little or no artifacts. 392 images had quality five or lower (considered bad by PREDICT-HD experimenters), while 4825 had quality six or higher. We augmented the training data to compensate for this class imbalance. For augmentation, we extended the \href{https://torchio.readthedocs.io/transforms/augmentation.html}{TorchIO library} and applied random operations, each with probability ranging from 10\% to 50\%. We implemented \href{https://github.com/OpenImaging/miqa/pull/339}{five simulated artifacts}: ghosting, motion, inhomogeneity, spike, and noise.
 
-The data mostly consisted of images with little or no artifacts. 392 images had quality five or lower (considered bad by PREDICT-HD experimenters), while 4825 had quality six or higher. We augmented training data to compensate for this class imbalance. For this, we extended the \href{https://torchio.readthedocs.io/transforms/augmentation.html}{TorchIO library} and applied random augmentations, each with probability ranging from 10\% to 50\%. We implemented \href{https://github.com/OpenImaging/miqa/pull/339}{five simulated artifacts}: ghosting, motion, inhomogeneity, spike, and noise.
-
-Since the images have variable size (in our case ranging from 192x256x104 to 512x512x256), we decided to split them into tiles of size 64$^3$ with minimal overlap. We apply the neural network (NN) to each tile, and then average the outputs. NN has 5 convolutional layers and a fully connected layer with eleven outputs. In the loss function, we combine regression to overall quality with the focal loss for each of the ten presence indicators. For training we use AdamW optimizer and exponential learning rate schedule. We trained for preset number of epochs, determined experimentally to allow convergence.
+Since the images have variable sizes (in our case ranging from 192x256x104 to 512x512x256), we decided to split them into tiles of size 64$^3$ with minimal overlap. We apply the neural network (NN) to each tile, and then average the outputs. Our NN has 5 convolutional layers and a fully connected layer with eleven outputs. In the loss function, we combine regression to overall quality with the focal loss for each of the ten presence indicators. For training we use AdamW optimizer and an exponential learning rate schedule. We trained for a preset number of epochs, determined experimentally to allow convergence.
 
 
 \begin{figure}[htbp]
@@ -100,7 +100,9 @@ Since the images have variable size (in our case ranging from 192x256x104 to 512
 
 We split the available data into 5 folds based on subject identifier. We used coefficient of determination R$^2$ applied to the overall quality (0-10) to assess predictive power. On validation data, R$^2$ was: 0.33, 0.27, 0.33, 0.24 and 0.14 for the five folds. Compare that to training data where it was: 0.65, 0.57, 0.64, 0.54 and 0.67. As there are no previous studies to compare to, we are setting precedent.
 
-We provide source code at \url{https://github.com/OpenImaging/miqa}, where we openly develop this system. We also maintain a demo instance at \url{https://miqa.miqaweb.io/}. Next steps are: adding \href{https://github.com/OpenImaging/miqa/pull/441}{permutation and swapping of axes} as an additional augmentation for training, applying this to all 9475 structural images, and transferring this to NCANDA data (which is not defaced).
+We provide source at \url{https://github.com/OpenImaging/miqa}, where we openly develop this system. We also maintain a demo instance at \url{https://miqa.miqaweb.io/}. Next steps are adding \href{https://github.com/OpenImaging/miqa/pull/441}{permutation and swapping of axes} as an additional augmentation for training
+%, applying this to all 9475 structural images, 
+and transferring this to NCANDA data (which is not defaced).
 
 
 % Acknowledgments---Will not appear in anonymized version
