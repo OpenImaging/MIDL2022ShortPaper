@@ -76,14 +76,8 @@ or tried to improve image quality~\cite{higaki2019improvement}. The closest one 
 
 For model training, we use data from the PREDICT-HD study~\cite{paulsen2014clinical}, which has manually assessed quality for structural (T$_1$, T$_2$, PD) brain MRIs. In this study we used only the T$_1$-weighted images. 2299 were acquired on 1.5T and 2918 on 3T MRI machines. The most important annotation is overall quality, scored on 0-10 scale (see \figureref{fig:slices}). The original study included manual assessment of signal to noise ratio and contrast to noise ratio. We didn't use these metrics as they are highly correlated the with overall quality, with Pearson coefficients of 0.721 and 0.715, respectively.
 % We made no attempt to use free-text comments.
-The study data contained nine presence/absence indications of anatomical variants in the images. Some of the images were missing a few of the indications. Of the 5217 T$_1$ images, 520 had normal anatomical variants, 61 had lesions, 269 incomplete brain coverage, 30 misalignment, 28 had wraparound, 347 ghosting, 585 inhomgeneity, 187 metal susceptibility, 888 flow artifact, and 1286 had truncation.
 
-The data largely consisted of images with little or no artifacts. 392 images had quality five or lower (considered bad by PREDICT-HD experimenters), while 4825 had quality six or higher. We augmented the training data to compensate for this class imbalance. For augmentation, we extended the \href{https://torchio.readthedocs.io/transforms/augmentation.html}{TorchIO library} and applied random operations, each with probability ranging from 10\% to 50\%. We implemented \href{https://github.com/OpenImaging/miqa/pull/339}{five simulated artifacts}: ghosting, motion, inhomogeneity, spike, and noise.
-
-Since the images have variable sizes (in our case ranging from 192x256x104 to 512x512x256), we decided to split them into tiles of size 64$^3$ with minimal overlap. We apply the neural network (NN) to each tile, and then average the outputs. Our NN has 5 convolutional layers and a fully connected layer with eleven outputs. In the loss function, we combine regression to overall quality with the focal loss for each of the ten presence indicators. For training we use AdamW optimizer and an exponential learning rate schedule. We trained for a preset number of epochs, determined experimentally to allow convergence.
-
-
-\begin{figure}[htbp]
+\begin{figure}[b] %btph
  % Caption and label go in the first argument and the figure contents
  % go in the second argument
 \floatconts
@@ -93,15 +87,22 @@ Since the images have variable sizes (in our case ranging from 192x256x104 to 51
   \includegraphics[width=0.32\linewidth]{axial.png}
   \includegraphics[width=0.32\linewidth]{coronal.png}
   \includegraphics[width=0.32\linewidth]{sagittal.png}
+  \vspace{-\baselineskip} % Since we have no text here, remove one line worth of vertical space
   }
 \end{figure}
+
+The study data contained nine presence/absence indications of artifacts and one of anatomical variants in the images. Some of the images were missing a few of the indications. Of the 5217 T$_1$ images, 520 had normal anatomical variants, 61 had lesions, 269 incomplete brain coverage, 30 misalignment, 28 had wraparound, 347 ghosting, 585 inhomgeneity, 187 metal susceptibility, 888 flow artifact, and 1286 had truncation.
+
+The data largely consisted of images with little or no artifacts. 392 images had quality five or lower (considered bad by PREDICT-HD experimenters), while 4825 had quality six or higher. We augmented the training data to compensate for this class imbalance. For augmentation, we extended the \href{https://torchio.readthedocs.io/transforms/augmentation.html}{TorchIO library} and applied random operations, each with probability ranging from 10\% to 50\%. We implemented \href{https://github.com/OpenImaging/miqa/pull/339}{five simulated artifacts}: ghosting, motion, inhomogeneity, spike, and noise.
+
+Since the images have variable sizes (in our case ranging from 192x256x104 to 512x512x256), we decided to split them into tiles of size 64$^3$ with minimal overlap. We apply the neural network (NN) to each tile, and then average the outputs. Our NN has 5 convolutional layers and a fully connected layer with eleven outputs. In the loss function, we combine regression to overall quality with the focal loss for each of the ten presence indicators. For training we use AdamW optimizer and an exponential learning rate schedule. We trained for a preset number of epochs, determined experimentally to allow convergence.
+
 
 \section{Results and Conclusion}
 
 We split the available data into 5 folds based on subject identifier. We used coefficient of determination R$^2$ applied to the overall quality (0-10) to assess predictive power. On validation data, R$^2$ was: 0.33, 0.27, 0.33, 0.24 and 0.14 for the five folds. Compare that to training data where it was: 0.65, 0.57, 0.64, 0.54 and 0.67. As there are no previous studies to compare to, we are setting precedent.
 
-We provide source at \url{https://github.com/OpenImaging/miqa}, where we openly develop this system. We also maintain a demo instance at \url{https://miqa.miqaweb.io/}. Next steps are adding \href{https://github.com/OpenImaging/miqa/pull/441}{permutation and swapping of axes} as an additional augmentation for training
-%, applying this to all 9475 structural images, 
+We provide source at \url{https://github.com/OpenImaging/miqa}, where we openly develop this system. We also maintain a demo instance at \url{https://miqa.miqaweb.io/}. Next steps are adding \href{https://github.com/OpenImaging/miqa/pull/441}{permutation and swapping of axes} as an additional augmentation for training, applying this to all 9475 structural images, 
 and transferring this to NCANDA data (which is not defaced).
 
 
