@@ -63,7 +63,7 @@ MIQA is a client-server web application based on \href{https://github.com/girder
 % Images are either imported or uploaded. During import, images are subjected to NN automatic quality assessment synchronously. After upload, images are auto-assessed asynchronously. Once the assessment is finished, the GUI is updated with the information.
 Images are auto-assessed after upload.
 % Automatic assessment helps human reviewers.
-Images which are not reviewed are available in a queue to tier one reviewers. They can mark it as good or questionable. Questionable images need to be reviewed by tier two reviewers who make a final decision. An image can be marked bad only if it has presence of at least one artifact. This can be indicated in the GUI, or a free-form text comment provided if the problem does not match well the pre-defined artifact classes.
+Images which are not reviewed are available in a queue to tier one reviewers. They can mark it as good or questionable. Questionable images need to be reviewed by tier two reviewers who then make a final decision. An image can be marked bad only if it has presence of at least one artifact. This can be indicated in the GUI, or a free-form text comment provided if the problem does not match well the pre-defined artifact classes.
 
 % I would like to mention that we use MRIQC~\cite{esteban2017mriqc}, but we should implement that before the paper deadline.
 
@@ -73,13 +73,14 @@ or tried to improve image quality~\cite{higaki2019improvement}. The closest one 
 
 \section{Materials and Methods}
 
-We use data from PREDICT-HD study~\cite{paulsen2014clinical}, which has manually assessed quality for structural (T$_1$, T$_2$, PD) brain MRIs. In this study we used only the T$_1$-weighted images. 2299 were acquired on 1.5T and 2918 on 3T MRI machines. The most important annotation is overall quality, scored on 0-10 scale (see \figureref{fig:slices}). It also has manual assessment of signal to noise ratio (SNR) and contrast to noise ratio (CNR). We didn't use them as they are highly correlated with overall quality, with Pearson coefficients of 0.721 and 0.715.
+We use data from PREDICT-HD study~\cite{paulsen2014clinical}, which has manually assessed quality for structural (T$_1$, T$_2$, PD) brain MRIs. In this study we used only the T$_1$-weighted images. 2299 were acquired on 1.5T and 2918 on 3T MRI machines. The most important annotation is overall quality, scored on 0-10 scale (see \figureref{fig:slices}). It also has manual assessment of signal to noise ratio and contrast to noise ratio. We didn't use them as they are highly correlated the with overall quality, with Pearson coefficients of 0.721 and 0.715.
 % We made no attempt to use free-text comments.
+
 There was binary presence indication of anatomical variants and nine artifacts for most images. Some of the images were missing a few of the indications. Of the 5217 T$_1$ images, 520 had normal anatomical variants, 61 had lesions, 269 incomplete brain coverage, 30 misalignment, 28 had wraparound, 347 ghosting, 585 inhomgeneity, 187 metal susceptibility, 888 flow artifact, and 1286 had truncation.
 
-Since the images have variable size ranging from 192x256x104 to 512x512x256, we decided to split them into tiles of size 64$^3$ with minimal overlap. We apply the neural network (NN) to each tile, and then average the outputs. NN has 5 convolutional layers and a fully connected layer with eleven outputs. In the loss function, we combine regression to overall quality with focal loss for each of the ten presence indicators. For training we use AdamW optimizer and exponential learning rate schedule. We trained for preset number of epochs, determined experimentally to allow convergence.
-
 The data mostly consisted of images with little or no artifacts. 392 images had quality five or lower (considered bad by PREDICT-HD experimenters), while 4825 had quality six or higher. We augmented training data to compensate for this class imbalance. For this, we extended the \href{https://torchio.readthedocs.io/transforms/augmentation.html}{TorchIO library} and applied random augmentations, each with probability ranging from 10\% to 50\%. We implemented \href{https://github.com/OpenImaging/miqa/pull/339}{five simulated artifacts}: ghosting, motion, inhomogeneity, spike, and noise.
+
+Since the images have variable size (in our case ranging from 192x256x104 to 512x512x256), we decided to split them into tiles of size 64$^3$ with minimal overlap. We apply the neural network (NN) to each tile, and then average the outputs. NN has 5 convolutional layers and a fully connected layer with eleven outputs. In the loss function, we combine regression to overall quality with the focal loss for each of the ten presence indicators. For training we use AdamW optimizer and exponential learning rate schedule. We trained for preset number of epochs, determined experimentally to allow convergence.
 
 
 \begin{figure}[htbp]
@@ -97,7 +98,7 @@ The data mostly consisted of images with little or no artifacts. 392 images had 
 
 \section{Results and Conclusion}
 
-We split the available data into 5 folds based on subject. We used coefficient of determination R$^2$ on the overall quality (0-10) to assess predictive power. On validation sets, R$^2$ was: 0.33, 0.27, 0.33, 0.24 and 0.14. Compare that to training data where it was: 0.65, 0.57, 0.64, 0.54 and 0.67. As there are no previous studies to compare to, we are setting precedent.
+We split the available data into 5 folds based on subject identifier. We used coefficient of determination R$^2$ applied to the overall quality (0-10) to assess predictive power. On validation data, R$^2$ was: 0.33, 0.27, 0.33, 0.24 and 0.14 for the five folds. Compare that to training data where it was: 0.65, 0.57, 0.64, 0.54 and 0.67. As there are no previous studies to compare to, we are setting precedent.
 
 We provide source code at \url{https://github.com/OpenImaging/miqa}, where we openly develop this system. We also maintain a demo instance at \url{https://miqa.miqaweb.io/}. Next steps are: adding \href{https://github.com/OpenImaging/miqa/pull/441}{permutation and swapping of axes} as an additional augmentation for training, applying this to all 9475 structural images, and transferring this to NCANDA data (which is not defaced).
 
