@@ -66,9 +66,9 @@ MIQA is a client-server web application based on \href{https://github.com/girder
 Images are auto-assessed after upload.
 % Automatic assessment helps human reviewers.
 %% COMMENT: --- The next sentence will not make sense to rmost readers.  Which images are "not reviewed", and what are "tier one reviewers"?
-Images which are not reviewed are available in a queue to tier one reviewers. 
-%% COMMENT: Who are "They".  The unreviewed images, or the "tier one reviewers", or the "automated review mechansims"?
-They can mark it as either good or questionable. Questionable images need to be reviewed by tier two reviewers who then make a final decision. An image can be marked bad only if it has presence of at least one artifact. This can be indicated in the GUI, or in a free-form text comment provided if the problem does not match the predefined artifact classes.
+% Not enough space to exaplain it all.
+Images which are not yet reviewed by a human are available in a queue to tier one reviewers.
+Tier one reviewers can mark each image as either good or questionable. Questionable images need to be reviewed by tier two reviewers who then make a final decision. An image can be marked bad only if it has presence of at least one artifact. This can be indicated in the GUI, or in a free-form text comment provided if the problem does not match the predefined artifact classes.
 
 % I would like to mention that we use MRIQC~\cite{esteban2017mriqc}, but we should implement that before the paper deadline.
 
@@ -78,8 +78,7 @@ or tried to improve image quality~\cite{higaki2019improvement}. The closest one 
 
 \section{Materials and Methods}
 
-For model training, we use data from the PREDICT-HD study~\cite{paulsen2014clinical}, which has manually assessed quality for structural (T$_1$, T$_2$, PD) brain MRIs. In this study we used only the T$_1$-weighted images. 2299 were acquired on 1.5T and 2918 on 3T MRI machines.
-%% COMMENT: Previous sentence should also metntion the number of unique MRI scanners used.  It was around 50 scanners
+For model training, we use data from the PREDICT-HD study~\cite{paulsen2014clinical}, which has manually assessed quality for structural (T$_1$, T$_2$, PD) brain MRIs. In this study we used only the T$_1$-weighted images. 2299 were acquired on 1.5T and 2918 on 3T MRI machines. Images came from around 50 scanners.
 The most important annotation is overall quality, scored on 0-10 scale (see \figureref{fig:slices}). The original study included manual assessment of signal to noise ratio and contrast to noise ratio. We didn't use these metrics as they are highly correlated the with overall quality, with Pearson coefficients of 0.721 and 0.715, respectively.
 % We made no attempt to use free-text comments.
 
