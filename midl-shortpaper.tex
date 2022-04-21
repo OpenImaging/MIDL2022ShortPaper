@@ -45,7 +45,7 @@ To minimize the amount of human time and attention spent reviewing the images,
 we created a neural network which provides an automatic assessment.
 This steers reviewers' attention to potentially problematic cases,
 reducing the likelihood to miss an image quality issue.
-We test our approach using 5-fold cross validation on a set of 9475 magnetic resonance images.
+We test our approach using 5-fold cross validation on a set of 5217 magnetic resonance images.
 \end{abstract}
 
 \begin{keywords}
@@ -69,17 +69,17 @@ Images which are not reviewed are available in a queue to tier one reviewers. Th
 
 As far as we know, this is the first attempt at assessing image quality of 3D images. Previous studies used photographs~\cite{bosse2017deep,hosu2020koniq}, retinal fundus images~\cite{yu2017image},
 % linguistic descriptions of images~\cite{hou2014blind},
-or tried to improve image quality~\cite{higaki2019improvement}.
+or tried to improve image quality~\cite{higaki2019improvement}. The closest one focuses on quantifying motion artifact \cite{butskova2021adversarial}, but that is only one of nine artifacts we consider here. Their ultimate goal was to correct motion artifacts.
 
 \section{Materials and Methods}
 
-We use data from PREDICT-HD study~\cite{paulsen2014clinical}, which has manually assessed quality for structural (T$_1$, T$_2$, PD) brain MRIs. The most important annotation is overall quality, scored on 0-10 scale (see \figureref{fig:slices}). It also has manual assessment of signal to noise ratio (SNR) and contrast to noise ratio (CNR). We didn't use them as they are highly correlated with overall quality, with Pearson coefficients of 0.721 and 0.715.
+We use data from PREDICT-HD study~\cite{paulsen2014clinical}, which has manually assessed quality for structural (T$_1$, T$_2$, PD) brain MRIs. In this study we used only the T$_1$-weighted images. 2299 were acquired on 1.5T and 2918 on 3T MRI machines. The most important annotation is overall quality, scored on 0-10 scale (see \figureref{fig:slices}). It also has manual assessment of signal to noise ratio (SNR) and contrast to noise ratio (CNR). We didn't use them as they are highly correlated with overall quality, with Pearson coefficients of 0.721 and 0.715.
 % We made no attempt to use free-text comments.
-Ten artifacts had binary presence indication for most images. Of the 9475 structural images, 661 had normal anatomical variants, 101 had lesions, 319 incomplete brain coverage, 347 misalignment, 30 had wraparound, 750 ghosting, 1462 inhomgeneity, 230 metal susceptibility, 986 flow artifact, and 2208 had truncation.
+There was binary presence indication of anatomical variants and nine artifacts for most images. Some of the images were missing a few of the indications. Of the 5217 T$_1$ images, 520 had normal anatomical variants, 61 had lesions, 269 incomplete brain coverage, 30 misalignment, 28 had wraparound, 347 ghosting, 585 inhomgeneity, 187 metal susceptibility, 888 flow artifact, and 1286 had truncation.
 
-Since the images have variable size, we decided to split them into tiles of size 64$^3$ with minimal overlap. We apply the neural network (NN) to each tile, and we average the outputs. NN has 5 convolutional layers and a fully connected layer with eleven outputs. In the loss function, we combine regression to overall quality with focal loss for each of the ten artifacts. For training we use AdamW optimizer and exponential learning rate schedule. We trained for preset number of epochs, determined experimentally to allow convergence.
+Since the images have variable size ranging from 192x256x104 to 512x512x256, we decided to split them into tiles of size 64$^3$ with minimal overlap. We apply the neural network (NN) to each tile, and then average the outputs. NN has 5 convolutional layers and a fully connected layer with eleven outputs. In the loss function, we combine regression to overall quality with focal loss for each of the ten presence indicators. For training we use AdamW optimizer and exponential learning rate schedule. We trained for preset number of epochs, determined experimentally to allow convergence.
 
-The data mostly consisted of images with little or no artifacts. 455 images had quality five or lower (considered bad by PREDICT-HD experimenters), while 9020 had quality six or higher. We augmented training data to compensate for this class imbalance. For this, we extended the \href{https://torchio.readthedocs.io/transforms/augmentation.html}{TorchIO library} and applied six random augmentations, each with probability ranging from 10\% to 50\%. We implemented axis swapping and permutation, and five simulated artifacts: ghosting, motion, inhomogeneity, spike, and noise.
+The data mostly consisted of images with little or no artifacts. 392 images had quality five or lower (considered bad by PREDICT-HD experimenters), while 4825 had quality six or higher. We augmented training data to compensate for this class imbalance. For this, we extended the \href{https://torchio.readthedocs.io/transforms/augmentation.html}{TorchIO library} and applied random augmentations, each with probability ranging from 10\% to 50\%. We implemented \href{https://github.com/OpenImaging/miqa/pull/339}{five simulated artifacts}: ghosting, motion, inhomogeneity, spike, and noise.
 
 
 \begin{figure}[htbp]
@@ -95,33 +95,15 @@ The data mostly consisted of images with little or no artifacts. 455 images had 
   }
 \end{figure}
 
-\section{Results and Discussion}
+\section{Results and Conclusion}
 
-We split the available data into 5 folds based on subject. Running cross-validation, coefficient of determination R$^2$ varied around 0.2 to 0.3 for validation data and around 0.5 to 0.8 for training data. As there are no previous studies to compare to, we are setting precedent.
+We split the available data into 5 folds based on subject. We used coefficient of determination R$^2$ on the overall quality (0-10) to assess predictive power. On validation sets, R$^2$ was: 0.33, 0.27, 0.33, 0.24 and 0.14. Compare that to training data where it was: 0.65, 0.57, 0.64, 0.54 and 0.67. As there are no previous studies to compare to, we are setting precedent.
 
-TODO: add more text here.
-
-We provide source code at \url{https://github.com/OpenImaging/miqa}, where we openly develop this system. We also maintain a demo instance at \url{https://miqa.miqaweb.io/}.
-
-
-% \begin{table}[htbp]
-%  % The first argument is the label.
-%  % The caption goes in the second argument, and the table contents
-%  % go in the third argument.
-% \floatconts
-%   {tab:example}%
-%   {\caption{An Example Table}}%
-%   {\begin{tabular}{ll}
-%   \bfseries Dataset & \bfseries Result\\
-%   Data1 & 0.12345\\
-%   Data2 & 0.67890\\
-%   Data3 & 0.54321
-%   \end{tabular}}
-% \end{table}
+We provide source code at \url{https://github.com/OpenImaging/miqa}, where we openly develop this system. We also maintain a demo instance at \url{https://miqa.miqaweb.io/}. Next steps are: adding \href{https://github.com/OpenImaging/miqa/pull/441}{permutation and swapping of axes} as an additional augmentation for training, applying this to all 9475 structural images, and transferring this to NCANDA data (which is not defaced).
 
 
 % Acknowledgments---Will not appear in anonymized version
-\midlacknowledgments{We thank all the people who worked on this project and didn't make it to the authors list.}
+\midlacknowledgments{We would like to thank our colleagues: Scott Wittenburg, Daniel Chiquito, Zach Mullen, Matt McCormick, Jeff Baumes (all at Kitware) and James Klo at Stanford.}
 % TODO: list the people here if there is space. Otherwise remove this section.
 
 \bibliography{midl-samplebibliography}
