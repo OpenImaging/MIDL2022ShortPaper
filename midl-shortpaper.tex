@@ -58,9 +58,9 @@ quality control, quality assurance, neural networks, web interface.
 Discovery of new knowledge in medicine is sometimes accomplished by large, multi-center imaging studies. The success of these studies depends on the quality of images and the resulting measurements. 
 %regardless of the size of the study.
 % Many studies rely on in-house procedures that combine automatically generated scores with manually guided checks, such as visual inspection. Currently these procedures are often implemented by combining several software systems that are not designed to support Quality Assurance (QA) or Quality Control (QC) processes.
-Our open-source \href{https://github.com/OpenImaging/miqa}{Medical Image Quality Assurance} (MIQA) system represents a design that facilitates collaboration and sharing. It incorporates a state-of-the-art deep learning component to improve the effectiveness of Quality Control (QC) efforts unique to the needs of multi-center studies. On a daily basis, this system QCs magnetic resonance images (MRIs) of the brain acquired by the National Consortium on Alcohol and Neurodevelopment in Adolescence (NCANDA). 
+\href{https://github.com/OpenImaging/miqa}{Medical Image Quality Assurance} (MIQA) provides a rapid quality assessment of medical images that also facilitates collaboration and sharing. It incorporates a state-of-the-art deep learning component to improve the effectiveness of Quality Control (QC) efforts unique to the needs of multi-center studies. On a daily basis, this system QCs magnetic resonance images (MRIs) of the brain acquired by the National Consortium on Alcohol and Neurodevelopment in Adolescence (NCANDA). 
 
-MIQA is a client-server web application based on \href{https://github.com/girder/girder}{Girder} and \href{https://www.django-rest-framework.org/}{django}. It uses \href{https://vuejs.org/}{Vue} and \href{https://vuetifyjs.com/}{Vuetify} for its graphical user interface (GUI). For image processing we use the \href{https://itk.org/}{Insight Toolkit (ITK)}. For neural network related operations we use \href{https://pytorch.org/}{PyTorch}, \href{https://monai.io/}{MONAI}, and \href{https://torchio.readthedocs.io/}{TorchIO}.
+MIQA is a client-server web application based on a robust and secure data management system \href{https://github.com/girder/girder}{Girder}. We further use \href{https://itk.org/}{ITK}, \href{https://kitware.github.io/vtk-js/index.html}{vtk.js}, \href{https://pytorch.org/}{PyTorch}, \href{https://monai.io/}{MONAI}, and \href{https://torchio.readthedocs.io/}{TorchIO}.
 
 % Images are either imported or uploaded. During import, images are subjected to NN automatic quality assessment synchronously. After upload, images are auto-assessed asynchronously. Once the assessment is finished, the GUI is updated with the information.
 Images are auto-assessed after upload.
@@ -68,9 +68,7 @@ Images are auto-assessed after upload.
 %% COMMENT: --- The next sentence will not make sense to rmost readers.  Which images are "not reviewed", and what are "tier one reviewers"?
 % Not enough space to exaplain it all.
 Images which are not yet reviewed by a human are available in a queue to tier one reviewers.
-Tier one reviewers can mark each image as either good or questionable. Questionable images need to be reviewed by tier two reviewers who then make a final decision. An image can be marked bad only if it has presence of at least one artifact. This can be indicated in the GUI, or in a free-form text comment provided if the problem does not match the predefined artifact classes.
-
-% I would like to mention that we use MRIQC~\cite{esteban2017mriqc}, but we should implement that before the paper deadline.
+Tier one reviewers can mark each image as either good or questionable. Questionable images need to be reviewed by tier two reviewers who make a final decision on the quality of an image. An image can be marked bad only if it has presence of at least one artifact. This can be indicated in the GUI, or in a free-form text comment provided if the problem does not match the predefined artifact classes.
 
 As far as we know, this is the first attempt at assessing image quality of 3D images. Previous studies used photographs~\cite{bosse2017deep,hosu2020koniq}, retinal fundus images~\cite{yu2017image},
 % linguistic descriptions of images~\cite{hou2014blind},
@@ -107,14 +105,14 @@ Since the images have variable sizes (ranging from 192x256x104 to 512x512x256 he
 \section{Results and Conclusion}
 
 We split the available data into 5 folds based on subject identifier. We used \href{https://en.wikipedia.org/wiki/Coefficient_of_determination}{coefficient of determination} R$^2$ applied to the overall quality (0-10) to assess predictive power. On validation data, average R$^2$ was 0.26 (see \figureref{fig:slices} for an example) and on training data where it was 0.61. R$^2$ ranges from $-\infty$ (worst) to +1 (perfect).
-% As there are no previous studies to compare to, we are setting precedent.
+As there are no previous studies to compare to, we are setting precedent.
 
 We provide source at \url{https://github.com/OpenImaging/miqa}, where we openly develop this system. We also maintain a demo instance at \url{https://miqa.miqaweb.io/}.
 % Next steps are adding \href{https://github.com/OpenImaging/miqa/pull/441}{permutation and swapping of axes} as an additional augmentation for training, applying this to all 9475 structural images, and transferring this to NCANDA data (which is not defaced).
 We welcome collaborative use of this software in medical research and clinical practice.
 
 % Acknowledgments---Will not appear in anonymized version
-\midlacknowledgments{We thank colleagues Scott Wittenburg, Daniel Chiquito, Zach Mullen, Matt McCormick, and Jeff Baumes for their work on software infrastructure and support. We were funded by NIH grants R44MH119022 and U24AA021697.}
+\midlacknowledgments{We would like to thank our Kitware colleagues Scott Wittenburg, Daniel Chiquito, Zach Mullen, Matt McCormick, and Jeff Baumes for their work on software infrastructure and support. We were funded by NIH grants R44MH119022 and U24AA021697.}
 
 \bibliography{midl-samplebibliography}
 
