@@ -58,7 +58,7 @@ quality control, quality assurance, neural networks, web interface.
 Discovery of new knowledge in medicine is sometimes accomplished by large, multi-center imaging studies. The success of these studies depends on the quality of images and the resulting measurements. 
 %regardless of the size of the study.
 % Many studies rely on in-house procedures that combine automatically generated scores with manually guided checks, such as visual inspection. Currently these procedures are often implemented by combining several software systems that are not designed to support Quality Assurance (QA) or Quality Control (QC) processes.
-Our open-source \href{https://github.com/OpenImaging/miqa}{Medical Image Quality Assurance} (MIQA) system represents a design that facilitates collaboration and sharing. It incorporates a state-of-the-art deep learning component to improve the effectiveness of Quality Control (QC) efforts unique to the needs of multi-center studies. This system daily QCs the brain magnetic resonance images (MRIs) acquired by the National Consortium on Alcohol and Neurodevelopment in Adolescence (NCANDA). 
+Our open-source \href{https://github.com/OpenImaging/miqa}{Medical Image Quality Assurance} (MIQA) system represents a design that facilitates collaboration and sharing. It incorporates a state-of-the-art deep learning component to improve the effectiveness of Quality Control (QC) efforts unique to the needs of multi-center studies. On a daily basis, this system QCs magnetic resonance images (MRIs) of the brain acquired by the National Consortium on Alcohol and Neurodevelopment in Adolescence (NCANDA). 
 
 MIQA is a client-server web application based on \href{https://github.com/girder/girder}{Girder} and \href{https://www.django-rest-framework.org/}{django}. It uses \href{https://vuejs.org/}{Vue} and \href{https://vuetifyjs.com/}{Vuetify} for its graphical user interface (GUI). For image processing we use the \href{https://itk.org/}{Insight Toolkit (ITK)}. For neural network related operations we use \href{https://pytorch.org/}{PyTorch}, \href{https://monai.io/}{MONAI}, and \href{https://torchio.readthedocs.io/}{TorchIO}.
 
@@ -82,39 +82,39 @@ For model training, we use data from the PREDICT-HD study~\cite{paulsen2014clini
 The most important annotation is overall quality, scored on 0-10 scale (see \figureref{fig:slices}). The original study included manual assessment of signal to noise ratio and contrast to noise ratio. We didn't use these metrics as they are highly correlated the with overall quality, with Pearson coefficients of 0.721 and 0.715, respectively.
 % We made no attempt to use free-text comments.
 
-\begin{figure}[btp] %btph
- % Caption and label go in the first argument and the figure contents
- % go in the second argument
-\floatconts
-  {fig:slices} % Subject 250121, session 91941, run 011.
-  {\caption{Left: slices of a T$_1$ weighted image with an overall score of 8 and no artifacts present. All the images from PREDICT-HD set are defaced with a facial blur. Right: confusion matrix for overall quality for fold 3. R$^2$=0.24 (average R$^2$=0.26).}}
-  {
-  \includegraphics[width=0.75\linewidth]{figure.png}
-  \vspace{-1.5\baselineskip} % Since we have no text here, remove one 1.5 lines worth of vertical space
-  }
-\end{figure}
-
 %% COMMENT:  The provided QC were indications of what was observed.  I would not say that the lack of a positive indication definitively means that absences of the characteristic, just that it was not observed.
 % There is not enough space here to squeeze that detail in :D
 The PREDICT-HD study data contained nine presence/absence indications of artifacts and one of anatomical variants in the images.
 % Some of the images were missing a few of the indications.
-Of the 5217 T$_1$ images, 520 indicated normal anatomical variants, 61 indicated lesions, 269 identified as incomplete brain coverage, 30 misalignment, 28 indicated wraparound, 347 ghosting, 585 inhomgeneity, 187 metal susceptibility, 888 flow artifact, and 1286 indicated truncation.
+Of the 5217 T$_1$ images, 520 indicated normal anatomical variants, 61 indicated lesions, 269 identified incomplete brain coverage, 30 misalignment, 28 indicated wraparound, 347 ghosting, 585 inhomgeneity, 187 metal susceptibility, 888 flow artifact, and 1286 indicated truncation.
 
 The data largely consisted of images with little or no artifacts. 392 images had quality five or lower (considered bad by PREDICT-HD experimenters), while 4825 had quality six or higher. We augmented the training data to compensate for this class imbalance. For augmentation, we extended the \href{https://torchio.readthedocs.io/transforms/augmentation.html}{TorchIO library} and applied random operations, each with probability ranging from 10\% to 50\%. We implemented \href{https://github.com/OpenImaging/miqa/pull/339}{five simulated artifacts}: ghosting, motion, inhomogeneity, spike, and noise.
 
 Since the images have variable sizes (ranging from 192x256x104 to 512x512x256 here), we decided to split them into tiles of size 64$^3$ with minimal overlap. We apply the neural network (NN) to each tile, and then average the outputs. Our NN has 5 convolutional layers and a fully connected layer with eleven outputs. In the loss function, we combine regression to overall quality with the focal loss for each of the ten presence indicators. For training we use AdamW optimizer and an exponential learning rate schedule. We trained for a preset number of epochs, determined experimentally to allow convergence.
 
+\begin{figure}[ptb] %btph
+% sub-250121_ses-91941_run-011_T1w (top)
+% sub-642802_ses-37532_run-003_BADT1w (bottom)
+\floatconts
+  {fig:slices}
+  {\caption{Left: slices of two images. Top has an overall score of 8 and no artifacts present. Bottom has score 6 with inhomogeneity, flow and truncation artifacts. PREDICT-HD images are defaced. Right: confusion matrix for fold 3, which has R$^2$=0.24.}}
+  {
+  \includegraphics[width=0.99\linewidth]{figure.png}
+  \vspace{-1.5\baselineskip} % Since we have no text here, remove one 1.5 lines worth of vertical space
+  }
+\end{figure}
 
 \section{Results and Conclusion}
 
-We split the available data into 5 folds based on subject identifier. We used \href{https://en.wikipedia.org/wiki/Coefficient_of_determination}{coefficient of determination} R$^2$ applied to the overall quality (0-10) to assess predictive power. On validation data, average R$^2$ was 0.26 (see \figureref{fig:slices} for an example) and on training data where it was 0.61. As there are no previous studies to compare to, we are setting precedent.
+We split the available data into 5 folds based on subject identifier. We used \href{https://en.wikipedia.org/wiki/Coefficient_of_determination}{coefficient of determination} R$^2$ applied to the overall quality (0-10) to assess predictive power. On validation data, average R$^2$ was 0.26 (see \figureref{fig:slices} for an example) and on training data where it was 0.61. R$^2$ ranges from $-\infty$ (worst) to +1 (perfect).
+% As there are no previous studies to compare to, we are setting precedent.
 
 We provide source at \url{https://github.com/OpenImaging/miqa}, where we openly develop this system. We also maintain a demo instance at \url{https://miqa.miqaweb.io/}.
 % Next steps are adding \href{https://github.com/OpenImaging/miqa/pull/441}{permutation and swapping of axes} as an additional augmentation for training, applying this to all 9475 structural images, and transferring this to NCANDA data (which is not defaced).
 We welcome collaborative use of this software in medical research and clinical practice.
 
 % Acknowledgments---Will not appear in anonymized version
-\midlacknowledgments{We thank our Kitware colleagues: Scott Wittenburg, Daniel Chiquito, Zach Mullen, Matt McCormick, and Jeff Baumes. This work was funded by NIH grant R44MH119022 and U24 AA021697.}
+\midlacknowledgments{We thank colleagues Scott Wittenburg, Daniel Chiquito, Zach Mullen, Matt McCormick, and Jeff Baumes for their work on software infrastructure and support. We were funded by NIH grants R44MH119022 and U24AA021697.}
 
 \bibliography{midl-samplebibliography}
 
