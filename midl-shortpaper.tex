@@ -58,7 +58,7 @@ quality control, quality assurance, neural networks, web interface.
 Discovery of new knowledge in medicine is sometimes accomplished by large, multi-center imaging studies. The success of these studies depends on the quality of images and the resulting measurements. 
 %regardless of the size of the study.
 % Many studies rely on in-house procedures that combine automatically generated scores with manually guided checks, such as visual inspection. Currently these procedures are often implemented by combining several software systems that are not designed to support Quality Assurance (QA) or Quality Control (QC) processes.
-Our open-source \href{https://github.com/OpenImaging/miqa}{Medical Image Quality Assurance} (MIQA) system represents a design that facilitates collaboration and sharing. It incorporates a state-of-the-art deep learning component to improve the effectiveness of Quality Control (QC) efforts unique to the needs of multi-center studies. The usefulness of this unique QC system is being tested by the National Consortium on Alcohol and Neurodevelopment in Adolescence (NCANDA) project. NCANDA uses magnetic resonance images (MRIs) of the brain, so we focus on deep learning for QC of head MRIs in this paper.
+Our open-source \href{https://github.com/OpenImaging/miqa}{Medical Image Quality Assurance} (MIQA) system represents a design that facilitates collaboration and sharing. It incorporates a state-of-the-art deep learning component to improve the effectiveness of Quality Control (QC) efforts unique to the needs of multi-center studies. This system daily QCs the brain magnetic resonance images (MRIs) acquired by the National Consortium on Alcohol and Neurodevelopment in Adolescence (NCANDA). 
 
 MIQA is a client-server web application based on \href{https://github.com/girder/girder}{Girder} and \href{https://www.django-rest-framework.org/}{django}. It uses \href{https://vuejs.org/}{Vue} and \href{https://vuetifyjs.com/}{Vuetify} for its graphical user interface (GUI). For image processing we use the \href{https://itk.org/}{Insight Toolkit (ITK)}. For neural network related operations we use \href{https://pytorch.org/}{PyTorch}, \href{https://monai.io/}{MONAI}, and \href{https://torchio.readthedocs.io/}{TorchIO}.
 
@@ -87,7 +87,7 @@ The most important annotation is overall quality, scored on 0-10 scale (see \fig
  % go in the second argument
 \floatconts
   {fig:slices} % Subject 250121, session 91941, run 011.
-  {\caption{Left: slices of a T$_1$ weighted image with an overall score of 8 and no artifacts present. All the images from PREDICT-HD set are defaced with a facial blur. Right: confusion matrix for overall quality for fold 3. R$^2$=0.24 (close to average).}}
+  {\caption{Left: slices of a T$_1$ weighted image with an overall score of 8 and no artifacts present. All the images from PREDICT-HD set are defaced with a facial blur. Right: confusion matrix for overall quality for fold 3. R$^2$=0.24 (average R$^2$=0.26).}}
   {
   \includegraphics[width=0.75\linewidth]{figure.png}
   \vspace{-1.5\baselineskip} % Since we have no text here, remove one 1.5 lines worth of vertical space
@@ -114,7 +114,7 @@ We provide source at \url{https://github.com/OpenImaging/miqa}, where we openly 
 We welcome collaborative use of this software in medical research and clinical practice.
 
 % Acknowledgments---Will not appear in anonymized version
-\midlacknowledgments{We thank our Kitware colleagues: Scott Wittenburg, Daniel Chiquito, Zach Mullen, Matt McCormick, and Jeff Baumes. This work was funded by NIH grant R44MH119022.}
+\midlacknowledgments{We thank our Kitware colleagues: Scott Wittenburg, Daniel Chiquito, Zach Mullen, Matt McCormick, and Jeff Baumes. This work was funded by NIH grant R44MH119022 and U24 AA021697.}
 
 \bibliography{midl-samplebibliography}
 
