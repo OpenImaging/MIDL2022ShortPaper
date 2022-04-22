@@ -95,7 +95,7 @@ Since the images have variable sizes (ranging from 192x256x104 to 512x512x256 he
 % sub-642802_ses-37532_run-003_BADT1w (bottom)
 \floatconts
   {fig:slices}
-  {\caption{Left: slices of two images. Top has an overall score of 8 and no artifacts present. Bottom has score 6 with inhomogeneity, flow and truncation artifacts. PREDICT-HD images are defaced. Right: confusion matrix for fold 3, which has R$^2$=0.24.}}
+  {\caption{Left: slices of two images. Top has an overall score of 8 and no artifacts present. Bottom has score 6 with inhomogeneity, flow and truncation artifacts. PREDICT-HD images are defaced. Right: confusion matrix for the fold with R$^2$=0.24.}}
   {
   \includegraphics[width=0.99\linewidth]{figure.png}
   \vspace{-1.5\baselineskip} % Since we have no text here, remove one 1.5 lines worth of vertical space
@@ -104,7 +104,11 @@ Since the images have variable sizes (ranging from 192x256x104 to 512x512x256 he
 
 \section{Results and Conclusion}
 
-We split the available data into 5 folds based on subject identifier. We used \href{https://en.wikipedia.org/wiki/Coefficient_of_determination}{coefficient of determination} R$^2$ applied to the overall quality (0-10) to assess predictive power. On validation data, average R$^2$ was 0.26 (see \figureref{fig:slices} for an example) and on training data where it was 0.61. R$^2$ ranges from $-\infty$ (worst) to +1 (perfect).
+We split the available data into 5 folds based on subject identifier. We used \href{https://en.wikipedia.org/wiki/Coefficient_of_determination}{coefficient of determination} R$^2$ applied to the overall quality (0-10) to assess predictive power.
+R$^2$ ranges from $-\infty$ (worst) to +1 (perfect).
+On validation data, R$^2$ was: 0.33, 0.27, 0.33, 0.24 and 0.14 for the five folds (average 0.26). Compare that to training data where it was: 0.65, 0.57, 0.64, 0.54 and 0.67 (average 0.61).
+% On validation data, average R$^2$ was 0.26 (see \figureref{fig:slices} for an example) and on training data where it was 0.61.
+Low R$^2$ on training data indicates inconsistent ground truth.
 As there are no previous studies to compare to, we are setting precedent.
 
 We provide source at \url{https://github.com/OpenImaging/miqa}, where we openly develop this system. We also maintain a demo instance at \url{https://miqa.miqaweb.io/}.
