@@ -1,3 +1,5 @@
+The paper's published address is: https://2022.midl.io/papers/b_s_5
+
 ![Build LaTeX document](https://github.com/MIDL-Conference/MIDLLatexTemplate/actions/workflows/build.yml/badge.svg)
 
 # Medical Imaging with Deep Learning (MIDL) Latex Template
